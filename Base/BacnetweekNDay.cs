@@ -43,6 +43,11 @@ namespace System.IO.BACnet
         {
             var ret = wday != 255 ? GetDayName(wday) : "Every days";
 
+            if (week != 255)
+                ret = ret + " on week " + week;
+            else
+                ret = ret + " on every week";
+
             if (month != 255)
                 ret = ret + " on " + CultureInfo.CurrentCulture.DateTimeFormat.MonthNames[month - 1];
             else
