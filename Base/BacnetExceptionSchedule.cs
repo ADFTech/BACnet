@@ -8,7 +8,7 @@ namespace System.IO.BACnet
 {
     public class BacnetExceptionSchedule : ASN1.IEncode, ASN1.IDecode
     {
-        List<BacnetSpecialevent> entries;
+        public List<BacnetSpecialevent> entries { get; set; }
 
         public BacnetExceptionSchedule()
         {

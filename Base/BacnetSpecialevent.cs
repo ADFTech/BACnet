@@ -8,7 +8,7 @@ namespace System.IO.BACnet
 {
     public class BacnetSpecialevent : ASN1.IEncode, ASN1.IDecode
     {
-        public enum BacnetSchedulePeriods
+        public enum BacnetSchedulePeriods : byte
         {
             CALENDAR_ENTRY,
             CALENDAR_REF,
@@ -17,8 +17,8 @@ namespace System.IO.BACnet
         public BacnetSchedulePeriods period_type;
         public object period_entry;
         public BacnetObjectId period_ref;
-        public BacnetDailySchedule schedule;
-        public uint priority;
+        public BacnetDailySchedule schedule { get; set; }
+        public uint priority { get; set; }
 
         public BacnetSpecialevent()
         {
@@ -32,12 +32,20 @@ namespace System.IO.BACnet
         {
             if (period_type == BacnetSchedulePeriods.CALENDAR_ENTRY)
             {
+                ASN1.encode_opening_tag(buffer, 0);
                 BACnetCalendarEntry.Encode(buffer, period_entry as ASN1.IEncode);
+                ASN1.encode_closing_tag(buffer, 0);
             }
             else if (period_type == BacnetSchedulePeriods.CALENDAR_REF)
             {
-                ASN1.encode_context_object_id(buffer, 1, period_ref.type, period_ref.instance);
+                ASN1.encode_context_object_id(buffer, (byte)BacnetSchedulePeriods.CALENDAR_REF, period_ref.type, period_ref.instance);
             }
+
+            ASN1.encode_opening_tag(buffer, 2);
+            schedule.Encode(buffer);
+            ASN1.encode_closing_tag(buffer, 2);
+
+            ASN1.encode_context_unsigned(buffer, 3, priority);
         }
 
         public int Decode(byte[] buffer, int offset, uint count)
@@ -77,9 +85,12 @@ namespace System.IO.BACnet
 
             len += tlen;
 
-            tlen = ASN1.decode_context_unsigned(buffer, offset + len, 3, out priority);
+            uint tpriority;
+            tlen = ASN1.decode_context_unsigned(buffer, offset + len, 3, out tpriority);
             if (tlen <= 0)
                 return -1;
+
+            priority = tpriority;
 
             len += tlen;
 

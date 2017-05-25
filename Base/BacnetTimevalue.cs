@@ -8,8 +8,8 @@ namespace System.IO.BACnet
 {
     public class BacnetTimevalue : ASN1.IEncode, ASN1.IDecode
     {
-        public DateTime time;
-        public BacnetValue val;
+        public DateTime time { get; set; }
+        public BacnetValue val { get; set; }
 
         public void Encode(EncodeBuffer buffer)
         {
@@ -22,7 +22,10 @@ namespace System.IO.BACnet
             int len = 0;
             int tlen = 0;
 
-            tlen = ASN1.decode_application_time(buffer, offset + len, out time);
+            DateTime ttime;
+            BacnetValue tval;
+
+            tlen = ASN1.decode_application_time(buffer, offset + len, out ttime);
             if (tlen <= 0)
                 return tlen;
             len += tlen;
@@ -34,9 +37,12 @@ namespace System.IO.BACnet
             {
                 len += tagLen;
                 var decodeLen = ASN1.bacapp_decode_data(buffer, offset + len, (int)count, (BacnetApplicationTags)tagNumber,
-                    lenValueType, out val);
+                    lenValueType, out tval);
                 if (decodeLen < 0) return decodeLen;
                 len += decodeLen;
+
+                time = ttime;
+                val = tval;
             }
 
             return len;

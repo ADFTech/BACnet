@@ -8,7 +8,7 @@ namespace System.IO.BACnet
 {
     public class BacnetDailySchedule : ASN1.IEncode, ASN1.IDecode
     {
-        List<BacnetTimevalue> entries;
+        public List<BacnetTimevalue> entries { get; }
 
         public BacnetDailySchedule()
         {
@@ -17,12 +17,10 @@ namespace System.IO.BACnet
 
         public void Encode(EncodeBuffer buffer)
         {
-            ASN1.encode_opening_tag(buffer, 0);
             foreach (BacnetTimevalue tv in entries)
             {
                 tv.Encode(buffer);
             }
-            ASN1.encode_closing_tag(buffer, 0);
         }
 
         public int Decode(byte[] buffer, int offset, uint count)
