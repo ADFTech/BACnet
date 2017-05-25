@@ -52,6 +52,8 @@
         BACNET_APPLICATION_TAG_WEEKLY_SCHEDULE,
         /* BACnetSpecialEvent */
         BACNET_APPLICATION_TAG_SPECIAL_EVENT,
+        /* BACnetExceptionSchedule */
+        BACNET_APPLICATION_TAG_EXCEPTION_SCHEDULE,
         /* BACnetReadAccessSpecification */
         BACNET_APPLICATION_TAG_READ_ACCESS_SPECIFICATION,
         /* BACnetReadAccessResult */

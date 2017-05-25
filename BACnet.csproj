@@ -61,6 +61,8 @@
     <Compile Include="Base\BacnetProgramError.cs" />
     <Compile Include="Base\BacnetProgramRequest.cs" />
     <Compile Include="Base\BacnetProgramState.cs" />
+    <Compile Include="Base\BacnetDailySchedule.cs" />
+    <Compile Include="Base\BacnetExceptionSchedule.cs" />
     <Compile Include="Base\BacnetPrescale.cs" />
     <Compile Include="Base\BacnetReinitializedStates.cs" />
     <Compile Include="BACnetClient.cs" />
@@ -101,7 +103,10 @@
     <Compile Include="Base\BacnetReliability.cs" />
     <Compile Include="Base\BacnetScale.cs" />
     <Compile Include="Base\BacnetServicesSupported.cs" />
+    <Compile Include="Base\BacnetSpecialevent.cs" />
     <Compile Include="Base\BacnetStatusFlags.cs" />
+    <Compile Include="Base\BacnetTime.cs" />
+    <Compile Include="Base\BacnetTimevalue.cs" />
     <Compile Include="Base\BacnetUnconfirmedServices.cs" />
     <Compile Include="Base\BacnetTimestampTags.cs" />
     <Compile Include="Base\BacnetTrendLogValueType.cs" />
@@ -114,6 +119,7 @@
     <Compile Include="Base\BacnetResultFlags.cs" />
     <Compile Include="Base\BacnetSegmentations.cs" />
     <Compile Include="Base\Enums\BacnetBackupState.cs" />
+    <Compile Include="Base\BacnetWeeklySchedule.cs" />
     <Compile Include="Base\Enums\BacnetEventEnable.cs" />
     <Compile Include="Base\Enums\BacnetEventStates.cs" />
     <Compile Include="Base\Enums\BacnetEventTypes.cs" />

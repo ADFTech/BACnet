@@ -1618,6 +1618,23 @@ namespace System.IO.BACnet.Serialize
             return len;
         }
 
+        public static int decode_context_unsigned(byte[] buffer, int offset, byte tagNumber, out uint value)
+        {
+            var len = 0;
+
+            if (decode_is_context_tag_with_length(buffer, offset + len, tagNumber, out len))
+            {
+                len += decode_unsigned(buffer, offset + len, (uint)len, out value);
+            }
+            else
+            {
+                value = 0;
+                len = -1;
+            }
+
+            return len;
+        }
+
         public static int decode_application_date(byte[] buffer, int offset, out DateTime bdate)
         {
             var len = 0;
@@ -2048,6 +2065,24 @@ namespace System.IO.BACnet.Serialize
                     tagLen = v.Decode(buffer, offset, (uint)maxOffset);
                     if (tagLen < 0) return -1;
                     value.Tag = BacnetApplicationTags.BACNET_APPLICATION_TAG_SCALE;
+                    value.Value = v;
+                    return tagLen;
+                }
+                if (propertyId == BacnetPropertyIds.PROP_WEEKLY_SCHEDULE)
+                {
+                    BacnetWeeklySchedule v = new BacnetWeeklySchedule();
+                    tagLen = v.Decode(buffer, offset, (uint)maxOffset);
+                    if (tagLen < 0) return -1;
+                    value.Tag = BacnetApplicationTags.BACNET_APPLICATION_TAG_WEEKLY_SCHEDULE;
+                    value.Value = v;
+                    return tagLen;
+                }
+                if (propertyId == BacnetPropertyIds.PROP_EXCEPTION_SCHEDULE)
+                {
+                    BacnetExceptionSchedule v = new BacnetExceptionSchedule();
+                    tagLen = v.Decode(buffer, offset, (uint)maxOffset);
+                    if (tagLen < 0) return -1;
+                    value.Tag = BacnetApplicationTags.BACNET_APPLICATION_TAG_EXCEPTION_SCHEDULE;
                     value.Value = v;
                     return tagLen;
                 }
