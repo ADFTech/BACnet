@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO.BACnet.Serialize;
 using System.Linq;
 using System.Text;
@@ -8,11 +9,11 @@ namespace System.IO.BACnet
 {
     public class BacnetDailySchedule : ASN1.IEncode, ASN1.IDecode
     {
-        public List<BacnetTimevalue> entries { get; }
+        public ObservableCollection<BacnetTimevalue> entries { get; }
 
         public BacnetDailySchedule()
         {
-            entries = new List<BacnetTimevalue>();
+            entries = new ObservableCollection<BacnetTimevalue>();
         }
 
         public void Encode(EncodeBuffer buffer)

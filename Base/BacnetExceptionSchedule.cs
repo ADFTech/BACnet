@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO.BACnet.Serialize;
 using System.Linq;
 using System.Text;
@@ -8,11 +9,11 @@ namespace System.IO.BACnet
 {
     public class BacnetExceptionSchedule : ASN1.IEncode, ASN1.IDecode
     {
-        public List<BacnetSpecialevent> entries { get; set; }
+        public ObservableCollection<BacnetSpecialevent> entries { get; set; }
 
         public BacnetExceptionSchedule()
         {
-            entries = new List<BacnetSpecialevent>();
+            entries = new ObservableCollection<BacnetSpecialevent>();
         }
 
         public void Encode(EncodeBuffer buffer)

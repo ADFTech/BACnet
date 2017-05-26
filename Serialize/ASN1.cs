@@ -2002,11 +2002,22 @@ namespace System.IO.BACnet.Serialize
                     value.Value = v;
                     return tagLen;
                 }
+                /*
                 if (propertyId == BacnetPropertyIds.PROP_LIST_OF_OBJECT_PROPERTY_REFERENCES ||
                     propertyId == BacnetPropertyIds.PROP_LOG_DEVICE_OBJECT_PROPERTY ||
                     propertyId == BacnetPropertyIds.PROP_OBJECT_PROPERTY_REFERENCE)
                 {
                     tagLen = decode_device_obj_property_ref(buffer, offset, maxOffset, out var v);
+                    if (tagLen < 0) return -1;
+                    value.Tag = BacnetApplicationTags.BACNET_APPLICATION_TAG_OBJECT_PROPERTY_REFERENCE;
+                    value.Value = v;
+                    return tagLen;
+                }
+                */
+                if (propertyId == BacnetPropertyIds.PROP_LIST_OF_OBJECT_PROPERTY_REFERENCES)
+                {
+                    BacnetDOPRList v = new BacnetDOPRList();
+                    tagLen = v.Decode(buffer, offset, (uint)maxOffset);
                     if (tagLen < 0) return -1;
                     value.Tag = BacnetApplicationTags.BACNET_APPLICATION_TAG_OBJECT_PROPERTY_REFERENCE;
                     value.Value = v;

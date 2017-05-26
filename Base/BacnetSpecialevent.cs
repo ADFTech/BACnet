@@ -59,12 +59,13 @@ namespace System.IO.BACnet
                 ASN1.IDecode entry;
                 tlen = BACnetCalendarEntry.Decode(buffer, offset + len, count, out entry);
 
-                if (tlen <= 0)
+                if (tlen <= 0 || !ASN1.decode_is_closing_tag_number(buffer, offset + len + tlen, 0))
                     return tlen;
+                len++;
+                len += tlen;
 
                 period_entry = entry;
                 period_type = BacnetSchedulePeriods.CALENDAR_ENTRY;
-                len += tlen;
             }
             else if (ASN1.decode_is_context_tag(buffer, offset + len, 1))
             {

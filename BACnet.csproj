@@ -62,6 +62,7 @@
     <Compile Include="Base\BacnetProgramRequest.cs" />
     <Compile Include="Base\BacnetProgramState.cs" />
     <Compile Include="Base\BacnetDailySchedule.cs" />
+    <Compile Include="Base\BacnetDOPRList.cs" />
     <Compile Include="Base\BacnetExceptionSchedule.cs" />
     <Compile Include="Base\BacnetPrescale.cs" />
     <Compile Include="Base\BacnetReinitializedStates.cs" />
