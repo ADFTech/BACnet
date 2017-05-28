@@ -14,6 +14,12 @@ namespace System.IO.BACnet
             INTEGER = 1,
         }
 
+        public object Val
+        {
+            get { return val; }
+            set { val = value; }
+        }
+
         public object val;
 
         public BacnetScale(object val)
@@ -23,11 +29,11 @@ namespace System.IO.BACnet
 
         public void Encode(EncodeBuffer buffer)
         {
-            if (val.GetType() == typeof(float))
+            if (val is float)
             {
-                ASN1.encode_context_real(buffer, (byte)BacnetScaleTypes.FLOAT, (float) val);
+                ASN1.encode_context_real(buffer, (byte)BacnetScaleTypes.FLOAT, (float)val);
             }
-            else if (val.GetType() == typeof(uint))
+            else if (val is uint)
             {
                 ASN1.encode_context_unsigned(buffer, (byte)BacnetScaleTypes.INTEGER, (uint)val);
             }

@@ -9,19 +9,92 @@ namespace System.IO.BACnet
 {
     public class BacnetDOPRList : ASN1.IEncode, ASN1.IDecode
     {
-        public ObservableCollection<BacnetDOPR> doprs { get; set; }
+        public IList<BacnetDOPR> Entries
+        {
+            get { return entries; }
+            set { entries = value; }
+        }
+
+        public IList<BacnetDOPR> entries;
 
         public BacnetDOPRList()
         {
-            doprs = new ObservableCollection<BacnetDOPR>();
+            entries = CreateDOPRS();
+        }
+
+        /// <summary>
+        /// Override this if needed
+        /// </summary>
+        public virtual IList<BacnetDOPR> CreateDOPRS()
+        {
+            return new ObservableCollection<BacnetDOPR>();
+        }
+
+        /// <summary>
+        /// Override this if needed
+        /// </summary>
+        public virtual BacnetDOPR CreateDOPR()
+        {
+            return new BacnetDOPR();
+        }
+
+        public void Encode(EncodeBuffer buffer)
+        {
+            foreach (BacnetDOPR dopr in entries)
+            {
+                dopr.Encode(buffer);
+            }
+        }
+
+        public int Decode(byte[] buffer, int offset, uint count)
+        {
+            int len = 0;
+            int tlen = 0;
+
+            while (offset + len < (count - 1))
+            {
+                BacnetDOPR dopr = CreateDOPR();
+                tlen = dopr.Decode(buffer, offset + len, count);
+                if (tlen <= 0)
+                    return tlen;
+
+                len += tlen;
+                entries.Add(dopr);
+            }
+
+            return len;
         }
 
         public class BacnetDOPR : ASN1.IEncode, ASN1.IDecode
         {
-            public BacnetObjectId obj_id { get; set; }
-            public BacnetPropertyIds prop_id { get; set; }
-            public uint array_index { get; set; }
-            public BacnetObjectId dev_id { get; set; }
+            public BacnetObjectId ObjectId
+            {
+                get { return obj_id; }
+                set { obj_id = value; }
+            }
+
+            public BacnetPropertyIds PropertyId
+            {
+                get { return prop_id; }
+                set { prop_id = value; }
+            }
+
+            public uint ArrayIndex
+            {
+                get { return array_index; }
+                set { array_index = value; }
+            }
+
+            public BacnetObjectId DeviceId
+            {
+                get { return dev_id; }
+                set { dev_id = value; }
+            }
+
+            public BacnetObjectId obj_id;
+            public BacnetPropertyIds prop_id;
+            public uint array_index;
+            public BacnetObjectId dev_id;
 
             public BacnetDOPR()
             {
@@ -94,33 +167,6 @@ namespace System.IO.BACnet
 
                 return len;
             }
-        }
-
-        public void Encode(EncodeBuffer buffer)
-        {
-            foreach (BacnetDOPR dopr in doprs)
-            {
-                dopr.Encode(buffer);
-            }
-        }
-
-        public int Decode(byte[] buffer, int offset, uint count)
-        {
-            int len = 0;
-            int tlen = 0;
-
-            while (offset + len < (count - 1))
-            {
-                BacnetDOPR dopr = new BacnetDOPR();
-                tlen = dopr.Decode(buffer, offset + len, count);
-                if (tlen <= 0)
-                    return tlen;
-
-                len += tlen;
-                doprs.Add(dopr);
-            }
-
-            return len;
         }
     }
 }

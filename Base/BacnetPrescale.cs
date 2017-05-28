@@ -8,6 +8,18 @@ namespace System.IO.BACnet
 {
     public class BacnetPrescale : ASN1.IEncode, ASN1.IDecode
     {
+        public uint Multiplier
+        {
+            get { return multiplier; }
+            set { multiplier = value; }
+        }
+
+        public uint Modulo
+        {
+            get { return modulo; }
+            set { modulo = value; }
+        }
+
         public uint multiplier;
         public uint modulo;
 

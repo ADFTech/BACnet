@@ -14,27 +14,47 @@ namespace System.IO.BACnet
             CALENDAR_REF,
         }
 
+        public BacnetDailySchedule Schedule
+        {
+            get { return schedule; }
+            set { schedule = value; }
+        }
+
+        public uint Priority
+        {
+            get { return priority; }
+            set { priority = value; }
+        }
+
         public BacnetSchedulePeriods period_type;
         public object period_entry;
         public BacnetObjectId period_ref;
-        public BacnetDailySchedule schedule { get; set; }
-        public uint priority { get; set; }
+        public BacnetDailySchedule schedule;
+        public uint priority;
 
         public BacnetSpecialevent()
         {
             period_type = BacnetSchedulePeriods.CALENDAR_ENTRY;
             period_entry = new BacnetDate();
             period_ref = new BacnetObjectId(BacnetObjectTypes.OBJECT_CALENDAR, 1);
-            schedule = new BacnetDailySchedule();
+            schedule = CreateDailySchedule();
+        }
+
+        /// <summary>
+        /// Override this if needed
+        /// </summary>
+        public virtual BacnetDailySchedule CreateDailySchedule()
+        {
+            return new BacnetDailySchedule();
         }
 
         public void Encode(EncodeBuffer buffer)
         {
             if (period_type == BacnetSchedulePeriods.CALENDAR_ENTRY)
             {
-                ASN1.encode_opening_tag(buffer, 0);
+                ASN1.encode_opening_tag(buffer, (byte)BacnetSchedulePeriods.CALENDAR_ENTRY);
                 BACnetCalendarEntry.Encode(buffer, period_entry as ASN1.IEncode);
-                ASN1.encode_closing_tag(buffer, 0);
+                ASN1.encode_closing_tag(buffer, (byte)BacnetSchedulePeriods.CALENDAR_ENTRY);
             }
             else if (period_type == BacnetSchedulePeriods.CALENDAR_REF)
             {
@@ -53,13 +73,13 @@ namespace System.IO.BACnet
             int len = 0;
             int tlen = 0;
 
-            if (ASN1.decode_is_opening_tag_number(buffer, offset + len, 0))
+            if (ASN1.decode_is_opening_tag_number(buffer, offset + len, (byte)BacnetSchedulePeriods.CALENDAR_ENTRY))
             {
                 len++;
                 ASN1.IDecode entry;
                 tlen = BACnetCalendarEntry.Decode(buffer, offset + len, count, out entry);
 
-                if (tlen <= 0 || !ASN1.decode_is_closing_tag_number(buffer, offset + len + tlen, 0))
+                if (tlen <= 0 || !ASN1.decode_is_closing_tag_number(buffer, offset + len + tlen, (byte)BacnetSchedulePeriods.CALENDAR_ENTRY))
                     return tlen;
                 len++;
                 len += tlen;
@@ -67,10 +87,10 @@ namespace System.IO.BACnet
                 period_entry = entry;
                 period_type = BacnetSchedulePeriods.CALENDAR_ENTRY;
             }
-            else if (ASN1.decode_is_context_tag(buffer, offset + len, 1))
+            else if (ASN1.decode_is_context_tag(buffer, offset + len, (byte)BacnetSchedulePeriods.CALENDAR_REF))
             {
                 ushort type;
-                tlen = ASN1.decode_context_object_id(buffer, offset + len, 1, out type, out period_ref.instance);
+                tlen = ASN1.decode_context_object_id(buffer, offset + len, (byte)BacnetSchedulePeriods.CALENDAR_REF, out type, out period_ref.instance);
                 period_ref.type = (BacnetObjectTypes)type;
                 if (tlen <= 0)
                 {

@@ -9,11 +9,33 @@ namespace System.IO.BACnet
 {
     public class BacnetExceptionSchedule : ASN1.IEncode, ASN1.IDecode
     {
-        public ObservableCollection<BacnetSpecialevent> entries { get; set; }
+        public IList<BacnetSpecialevent> Entries
+        {
+            get { return entries; }
+            set { entries = value; }
+        }
+
+        public IList<BacnetSpecialevent> entries;
 
         public BacnetExceptionSchedule()
         {
-            entries = new ObservableCollection<BacnetSpecialevent>();
+            entries = CreateSpecialEvents();
+        }
+
+        /// <summary>
+        /// Override this if needed
+        /// </summary>
+        public virtual IList<BacnetSpecialevent> CreateSpecialEvents()
+        {
+            return new ObservableCollection<BacnetSpecialevent>();
+        }
+
+        /// <summary>
+        /// Override this if needed
+        /// </summary>
+        public virtual BacnetSpecialevent CreateSpecialEvent()
+        {
+            return new BacnetSpecialevent();
         }
 
         public void Encode(EncodeBuffer buffer)
@@ -31,7 +53,7 @@ namespace System.IO.BACnet
 
             while (offset + len < (count - 1))
             {
-                BacnetSpecialevent entry = new BacnetSpecialevent();
+                BacnetSpecialevent entry = CreateSpecialEvent();
                 tlen = entry.Decode(buffer, offset + len, count);
                 if (tlen <= 0)
                     return tlen;

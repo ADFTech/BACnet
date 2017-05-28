@@ -8,7 +8,13 @@ namespace System.IO.BACnet
 {
     public class BacnetWeeklySchedule : ASN1.IEncode, ASN1.IDecode
     {
-        public BacnetDailySchedule[] schedules { get; }
+        public BacnetDailySchedule[] Schedules
+        {
+            get { return schedules; }
+            set { schedules = value; }
+        }
+
+        public BacnetDailySchedule[] schedules;
 
         public BacnetWeeklySchedule()
         {
@@ -16,8 +22,16 @@ namespace System.IO.BACnet
 
             for (int i = 0; i < 7; i++)
             {
-                schedules[i] = new BacnetDailySchedule();
+                schedules[i] = CreateDailySchedule();
             }
+        }
+
+        /// <summary>
+        /// Override this if needed
+        /// </summary>
+        public virtual BacnetDailySchedule CreateDailySchedule()
+        {
+            return new BacnetDailySchedule();
         }
 
         public void Encode(EncodeBuffer buffer)

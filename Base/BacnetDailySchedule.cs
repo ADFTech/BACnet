@@ -9,16 +9,29 @@ namespace System.IO.BACnet
 {
     public class BacnetDailySchedule : ASN1.IEncode, ASN1.IDecode
     {
-        public ObservableCollection<BacnetTimevalue> entries { get; }
+        public IList<BacnetTimevalue> Timevalues
+        {
+            get { return timevalues; }
+            set { timevalues = value; }
+        }
+        public IList<BacnetTimevalue> timevalues;
 
         public BacnetDailySchedule()
         {
-            entries = new ObservableCollection<BacnetTimevalue>();
+            timevalues = CreateTimeValues();
+        }
+
+        /// <summary>
+        /// Override this if needed
+        /// </summary>
+        public virtual IList<BacnetTimevalue> CreateTimeValues()
+        {
+            return new ObservableCollection<BacnetTimevalue>();
         }
 
         public void Encode(EncodeBuffer buffer)
         {
-            foreach (BacnetTimevalue tv in entries)
+            foreach (BacnetTimevalue tv in timevalues)
             {
                 tv.Encode(buffer);
             }
@@ -51,7 +64,7 @@ namespace System.IO.BACnet
                 }
 
                 len += tlen;
-                entries.Add(tv);
+                timevalues.Add(tv);
             }
             len++;
 

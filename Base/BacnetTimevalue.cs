@@ -8,8 +8,20 @@ namespace System.IO.BACnet
 {
     public class BacnetTimevalue : ASN1.IEncode, ASN1.IDecode
     {
-        public DateTime time { get; set; }
-        public BacnetValue val { get; set; }
+        public DateTime Time
+        {
+            get { return time; }
+            set { time = value; }
+        }
+
+        public BacnetValue Val
+        {
+            get { return val; }
+            set { val = value; }
+        }
+
+        public DateTime time;
+        public BacnetValue val;
 
         public void Encode(EncodeBuffer buffer)
         {
