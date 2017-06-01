@@ -1569,6 +1569,20 @@ namespace System.IO.BACnet
             });
         }
 
+        public Task<IList<BacnetPropertyValue>> ReadPropertyMultipleAsync(BacnetAddress address,
+            BacnetObjectId objectId, IList<BacnetPropertyReference> propertyReferences)
+        {
+            IList<BacnetReadAccessResult> result;
+
+            return Task<IList<BacnetPropertyValue>>.Factory.StartNew(() =>
+            {
+                if (!ReadPropertyMultipleRequest(address, objectId, propertyReferences, out result))
+                    throw new Exception($"Failed to read multiple properties of {objectId} from {address}");
+
+                return result.Single().values;
+            });
+        }
+
         public IAsyncResult BeginReadPropertyMultipleRequest(BacnetAddress adr, BacnetObjectId objectId, IList<BacnetPropertyReference> propertyIdAndArrayIndex, bool waitForTransmit, byte invokeId = 0)
         {
             var propertyIds = string.Join(", ", propertyIdAndArrayIndex.Select(v => (BacnetPropertyIds)v.propertyIdentifier));
