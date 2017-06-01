@@ -23,6 +23,12 @@ namespace System.IO.BACnet
         public DateTime time;
         public BacnetValue val;
 
+        public BacnetTimevalue()
+        {
+            time = new DateTime();
+            val = new BacnetValue(BacnetApplicationTags.BACNET_APPLICATION_TAG_ENUMERATED, 0u);
+        }
+
         public void Encode(EncodeBuffer buffer)
         {
             ASN1.encode_application_time(buffer, time);

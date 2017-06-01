@@ -34,7 +34,7 @@ namespace System.IO.BACnet
 
         public BacnetSpecialevent()
         {
-            period_type = BacnetSchedulePeriods.CALENDAR_ENTRY;
+            period_type = BacnetSchedulePeriods.CALENDAR_REF;
             period_entry = new BacnetDate();
             period_ref = new BacnetObjectId(BacnetObjectTypes.OBJECT_CALENDAR, 1);
             schedule = CreateDailySchedule();
