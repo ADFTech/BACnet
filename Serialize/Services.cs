@@ -1264,18 +1264,24 @@ namespace System.IO.BACnet.Serialize
         {
             ASN1.encode_context_unsigned(buffer, 0, vendorID);
             ASN1.encode_context_unsigned(buffer, 1, serviceNumber);
-            ASN1.encode_opening_tag(buffer, 2);
-            buffer.Add(data, data.Length);
-            ASN1.encode_closing_tag(buffer, 2);
+            if (data != null && data.Length != 0)
+            {
+                ASN1.encode_opening_tag(buffer, 2);
+                buffer.Add(data, data.Length);
+                ASN1.encode_closing_tag(buffer, 2);
+            }
         }
 
         public static void EncodePrivateTransferUnconfirmed(EncodeBuffer buffer, uint vendorID, uint serviceNumber, byte[] data)
         {
             ASN1.encode_context_unsigned(buffer, 0, vendorID);
             ASN1.encode_context_unsigned(buffer, 1, serviceNumber);
-            ASN1.encode_opening_tag(buffer, 2);
-            buffer.Add(data, data.Length);
-            ASN1.encode_closing_tag(buffer, 2);
+            if (data != null && data.Length != 0)
+            {
+                ASN1.encode_opening_tag(buffer, 2);
+                buffer.Add(data, data.Length);
+                ASN1.encode_closing_tag(buffer, 2);
+            }
         }
 
         public static void EncodePrivateTransferAcknowledge(EncodeBuffer buffer, uint vendorID, uint serviceNumber, byte[] data)

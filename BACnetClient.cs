@@ -2274,6 +2274,54 @@ namespace System.IO.BACnet
             res.Dispose();
         }
 
+        public bool PrivateTransferRequest(BacnetAddress addr, uint vendorId, uint serviceNo, byte[] param, byte invokeId = 0)
+        {
+            using (var result = (BacnetAsyncResult)BeginPrivateTransferRequest(addr, vendorId, serviceNo, param, true, invokeId))
+            {
+                for (var r = 0; r < _retries; r++)
+                {
+                    if (result.WaitForDone(Timeout))
+                    {
+                        EndPrivateTransferRequest(result, out var ex);
+                        if (ex != null)
+                            throw ex;
+                        return true;
+                    }
+                    if (r < Retries - 1)
+                        result.Resend();
+                }
+            }
+            return false;
+        }
+
+        public IAsyncResult BeginPrivateTransferRequest(BacnetAddress addr, uint vendorId, uint serviceNo, byte[] param, bool waitForTransmit, byte invokeId = 0)
+        {
+            Log.Debug("Sending PrivateTransferRequest");
+            if (invokeId == 0) invokeId = unchecked(_invokeId++);
+
+            var buffer = GetEncodeBuffer(Transport.HeaderLength);
+
+            NPDU.Encode(buffer, BacnetNpduControls.PriorityNormalMessage | BacnetNpduControls.ExpectingReply, addr.RoutedSource);
+            APDU.EncodeConfirmedServiceRequest(buffer, PduConfirmedServiceRequest(), BacnetConfirmedServices.SERVICE_CONFIRMED_PRIVATE_TRANSFER, MaxSegments, Transport.MaxAdpuLength, invokeId);
+            Services.EncodePrivateTransferConfirmed(buffer, vendorId, serviceNo, param);
+
+            //send
+            var ret = new BacnetAsyncResult(this, addr, invokeId, buffer.buffer, buffer.offset - Transport.HeaderLength, waitForTransmit, TransmitTimeout);
+            ret.Resend();
+
+            return ret;
+        }
+
+        public void EndPrivateTransferRequest(IAsyncResult result, out Exception ex)
+        {
+            var res = (BacnetAsyncResult)result;
+            ex = res.Error;
+            if (ex == null && !res.WaitForDone(Timeout))
+                ex = new Exception("Wait Timeout");
+
+            res.Dispose();
+        }
+
         public static byte GetSegmentsCount(BacnetMaxSegments maxSegments)
         {
             switch (maxSegments)
